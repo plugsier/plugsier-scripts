@@ -30,3 +30,35 @@ TMPSVNDIR="$wpcontentdir"/temp-svn-"$plugindirname";
 echo $TMPSVNDIR;
 mkdir -p "$TMPZIPDIR";
 cd "$TMPSVNDIR";
+
+# Pull the SVN repo from wp.org into that directory.
+svn co https://plugins.svn.wordpress.org/"$plugindirname" --depth=empty .;
+svn up trunk
+svn up tags --depth=empty
+svn up tags/"$VERSION"
+cd trunk;
+
+# Remove everything from the trunk directory.
+#rm -rf * .* *.*;
+
+# Unzip the built/zipped file to the trunk directory of the SVN repo.
+unzip -d "$TMPSVNDIR"/trunk "$wpcontentdir"/plugins/"$plugindirname"/"$plugindirname"."$VERSION".zip
+
+svn propset svn:ignore -F .svnignore .;
+cd ../;
+svn stat | { grep -E '^\?' || true; } | awk '{print $2}' | xargs -r svn add
+svn stat | { grep -E '^\!' || true; } | awk '{print $2}' | xargs -r svn rm
+echo "Here is the svn stat about to be checked in:"
+svn stat --verbose
+
+# Remove this tag in case it already exists.
+svn rm tags/"$VERSION";
+
+# Copy trunk into the tag folder we are creating.
+svn cp trunk tags/"$VERSION";
+
+# Send the files up to the WP repo.
+svn ci -m "$SLUG: syncing with code from Github" --no-auth-cache --non-interactive --username "{$SVN_USERNAME}" --password "{$SVN_PASSWORD}";
+cd $CURDIR;
+#rm -rf $TMPSVNDIR;
+echo 'Done!';
