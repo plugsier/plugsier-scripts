@@ -1,9 +1,10 @@
 {
-	"name": "wpps-scripts",
+	"name": "plugsier-scripts",
+	"description": "Easier plugin development for WordPress.",
 	"version": "1.0.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wp-plugin-sidekick/wpps-scripts"
+		"url": "https://github.com/plugsier/plugsier-scripts"
 	},
 	"scripts": {
 		"format": "wp-scripts format",

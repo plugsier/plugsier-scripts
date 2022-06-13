@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package WPPS
+ * @package Plugsier
  */
 
 // Require composer dependencies.

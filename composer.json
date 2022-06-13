@@ -1,7 +1,7 @@
 {
-	"name": "wp-plugin-sidekick/wp-plugin-sidekick",
+	"name": "plugsier/plugsier-scripts",
 	"type": "wordpress-plugin",
-	"description": "An interface for building WordPress plugins and themes",
+	"description": "Easier plugin development for WordPress.",
 	"license": "GPL-2.0",
 	"require": {
 		"php": "^7.3||^8.0",
