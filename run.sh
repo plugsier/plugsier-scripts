@@ -11,7 +11,7 @@ done
 
 CWD=$(pwd)
 
-WORKDIR='/usr/src/plugsier/plugsier-scripts'
+WORKDIR='/usr/src/plugsier/plugsier-scripts/'
 	
 # Define the volumes to mount
 PLUGSIER_SCRIPTS_VOLUME="$CWD""/plugsier-scripts:/usr/src/plugsier/plugsier-scripts"
@@ -56,7 +56,8 @@ echo '!!!theContainerId!!!'$CONTAINER_ID
 
 # Run the command passed-in.
 docker exec -w $WORKDIR $CONTAINER_ID $COMMAND
-echo '!!!theExitCode!!!'$?
+THEEXITCODE=$?
+echo '!!!theExitCode!!!'$THEEXITCODE
 
 # Stop and remove this container when finished.
 docker stop $CONTAINER_ID;
@@ -64,3 +65,5 @@ docker rm $CONTAINER_ID;
 
 # Remove any unused volumes.
 docker volume prune -f;
+
+exit $THEEXITCODE
