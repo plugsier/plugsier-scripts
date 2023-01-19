@@ -1,11 +1,12 @@
 #!/bin/bash
 
-while getopts 'p:c:n:w:' flag; do
+while getopts 'p:c:n:w:s:' flag; do
 	case "${flag}" in
 		p) PLUGIN_PATH=${OPTARG} ;;
 		c) COMMAND=${OPTARG} ;;
 		n) INCLUDE_NODE_MODULES=${OPTARG} ;;
 		w) WORKDIR=${OPTARG} ;;
+		s) SHOWPLUGSIERDETAILS=${OPTARG} ;;
 	esac
 done
 
@@ -14,7 +15,7 @@ CWD=$(pwd)
 WORKDIR='/usr/src/plugsier/plugsier-scripts/'
 	
 # Define the volumes to mount
-PLUGSIER_SCRIPTS_VOLUME="$CWD""/plugsier-scripts:/usr/src/plugsier/plugsier-scripts"
+PLUGSIER_SCRIPTS_VOLUME="$(dirname "$CWD")"":/usr/src/plugsier/plugsier-scripts"
 PLUGIN_VOLUME="$PLUGIN_PATH:/usr/src/plugsier/plugin"
 
 # Build the string of volumes we want for this container.
@@ -41,29 +42,35 @@ if [ "$INCLUDE_NODE_MODULES" = "0" ]; then
 fi
 
 # Run the docker container.
-echo '-------'
-echo 'Starting the Plugsier docker container, built specifically for this job.'
-echo '-------'
-echo "docker run $VOLUME_STRING -it -d plugsier"
-echo '-------'
-echo "Running Command inside Docker Container at location $WORKDIR:"
-echo $COMMAND
-echo '-------'
+if [ "$SHOWPLUGSIERDETAILS" = "1" ]; then
+	echo '-------'
+	echo 'Starting the Plugsier docker container, built specifically for this job.'
+	echo '-------'
+	echo "docker run $VOLUME_STRING -it -d plugsier"
+	echo '-------'
+	echo "Running Command inside Docker Container at location $WORKDIR:"
+	echo $COMMAND
+	echo '-------'
+fi
 CONTAINER_ID=$(docker run $VOLUME_STRING -it -d plugsier)
 
-echo '!!!theContainerId!!!'$CONTAINER_ID
-
+if [ "$SHOWPLUGSIERDETAILS" = "1" ]; then
+	echo '!!!theContainerId!!!'$CONTAINER_ID
+fi
 
 # Run the command passed-in.
 docker exec -w $WORKDIR $CONTAINER_ID $COMMAND
 THEEXITCODE=$?
-echo '!!!theExitCode!!!'$THEEXITCODE
+
+if [ "$SHOWPLUGSIERDETAILS" = "1" ]; then
+	echo '!!!theExitCode!!!'$THEEXITCODE
+fi
 
 # Stop and remove this container when finished.
-docker stop $CONTAINER_ID;
-docker rm $CONTAINER_ID;
+RESULTOFDOCKERSTOP=$(docker stop $CONTAINER_ID)
+RESULTOFDOCKERRM=$(docker rm $CONTAINER_ID)
 
 # Remove any unused volumes.
-docker volume prune -f;
+RESULTOFDOCKERPRUNE=$(docker volume prune -f)
 
 exit $THEEXITCODE
