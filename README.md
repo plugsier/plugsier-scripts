@@ -14,21 +14,20 @@ Add phpunit, eslint, and stylelint using WordPress Coding Standards to any WordP
 	},
 	"plugsier_options": "-n YourPluginNamespace -t your-plugin-textdomain",
 	"scripts": {
-		"preinstall": "cd ../../; if [ ! -d plugsier-scripts ]; then git clone https://github.com/plugsier/plugsier-scripts plugsier-scripts; fi; cd plugsier-scripts; git checkout main; git pull origin main;",
-		"dev": "cd ../../plugsier-scripts; sh dev.sh $npm_package_plugsier_options",
-		"build": "cd ../../plugsier-scripts; sh build.sh $npm_package_plugsier_options",
-		"test:phpunit": "cd ../../plugsier-scripts; sh phpunit.sh $npm_package_plugsier_options;",
-		"lint:php": "cd ../../plugsier-scripts; sh run.sh -p $OLDPWD -i 0 -c "sh phpcs.sh $npm_package_plugsier_options;",
-		"lint:php:fix": "cd ../../plugsier-scripts; sh phpcs.sh $npm_package_plugsier_options -f 1;",
-		"lint:js": "cd ../../plugsier-scripts; sh lint-js.sh $npm_package_plugsier_options",
-		"lint:js:fix": "cd ../../plugsier-scripts; sh lint-js.sh $npm_package_plugsier_options -f 1;",
-		"lint:css": "cd ../../plugsier-scripts; sh lint-css.sh $npm_package_plugsier_options;",
-		"lint:css:fix": "cd ../../plugsier-scripts; sh lint-css.sh $npm_package_plugsier_options -f 1;",
-		"test:js": "cd ../../plugsier-scripts; sh test-js.sh $npm_package_plugsier_options;",
-		"zip": "cd ../../plugsier-scripts; sh zip.sh $npm_package_plugsier_options"
+		"preinstall": "if [ ! -d ../../plugsier-scripts ]; then git clone https://github.com/plugsier/plugsier-scripts ../../plugsier-scripts; else cd ../../plugsier-scripts && git reset --hard && git checkout main && git pull origin main;fi;",
+		"dev": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh dev.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"build": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh build.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"test:phpunit": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh phpunit.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"lint:php": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh phpcs.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"lint:php:fix": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh phpcs.sh -n YourPluginNamespace -t your-plugin-textdomain -f 1';",
+		"lint:js": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '1' -c 'sh lint-js.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"lint:js:fix": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '1' -c 'sh lint-js.sh -f 1 -n YourPluginNamespace -t your-plugin-textdomain';",
+		"lint:css": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh lint-css.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"lint:css:fix": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh lint-css.sh -f 1 -n YourPluginNamespace -t your-plugin-textdomain';",
+		"test:js": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '1' -c 'sh test-js.sh -n YourPluginNamespace -t your-plugin-textdomain';",
+		"zip": "cd ../../plugsier-scripts/docker; sh run.sh -p $OLDPWD -n '0' -c 'sh zip.sh -n YourPluginNamespace -t your-plugin-textdomain';"
 	}
 }
-
 ```
 
 In the example package.json file above, simply replace these strings:
